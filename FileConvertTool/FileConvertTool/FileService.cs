@@ -77,7 +77,8 @@ namespace FileConvertTool
                     DataTable dt = new DataTable();
                     DataRow row = null;
                     dt.Columns.AddRange(dbfTable.Columns
-                        .Select(x=>new DataColumn { 
+                        .Select(x => new DataColumn
+                        {
                             ColumnName = x.ColumnName,
                             DataType = x.DataType,
                         }).ToArray());
@@ -129,7 +130,8 @@ namespace FileConvertTool
                     DataTable dt = new DataTable();
                     DataRow row = null;
                     dt.Columns.AddRange(dbfTable.Columns
-                        .Select(x=>new DataColumn { 
+                        .Select(x => new DataColumn
+                        {
                             ColumnName = x.ColumnName,
                             DataType = x.DataType,
                         }).ToArray());
@@ -201,9 +203,10 @@ namespace FileConvertTool
         /// <summary>
         /// dbf檔案轉換成Excel檔
         /// </summary>
-        /// <param name="sheetName"></param>
-        /// <param name="dbfPath"></param>
-        public static void DbfConvertToExcel(string sheetName, string dbfPath)
+        /// <param name="sheetName">試算表名稱</param>
+        /// <param name="dbfPath">dbf檔案路徑</param>
+        /// <param name="exportDirPath">匯出資料夾路徑</param>
+        public static void DbfConvertToExcel(string sheetName, string dbfPath, string exportDirPath)
         {
             try
             {
@@ -253,7 +256,9 @@ namespace FileConvertTool
                         }
                         iRow++;
                     }
-                    FileStream file = new FileStream(Path.ChangeExtension(dbfPath, "xlsx"), FileMode.Create);//產生檔案
+
+                    string exportFilePath = Path.ChangeExtension(Path.Combine(exportDirPath, Path.GetFileName(dbfPath)), "xlsx");
+                    FileStream file = new FileStream(exportFilePath, FileMode.Create);//產生檔案
                     wb.Write(file);
                     wb.Dispose();
                     file.Close();
