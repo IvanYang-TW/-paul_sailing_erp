@@ -1,4 +1,5 @@
 ﻿using DbfDataReader;
+using Newtonsoft.Json;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -8,9 +9,11 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
-namespace FileConvertTool
+namespace FileConvertSerivce.Services
 {
     public class FileService
     {
@@ -269,7 +272,130 @@ namespace FileConvertTool
                 throw;
             }
         }
+    }
 
+    public class FileService<T>
+    {
+        /// <summary>
+        /// 取得dbf檔資料
+        /// </summary>
+        /// <param name="dbfPath"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> DbfGetData(string dbfPath)
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                using (var dbfTable = new DbfTable(dbfPath, Encoding.GetEncoding("big5")))
+                {
+                    var header = dbfTable.Header;
+                    var versionDescription = header.VersionDescription;
+                    var hasMemo = dbfTable.Memo != null;
+                    var recordCount = header.RecordCount;
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(string.Join(",", dbfTable.Columns.Select(x => x.ColumnName)));
+                    DataTable dt = new DataTable();
+                    DataRow row = null;
+                    dt.Columns.AddRange(dbfTable.Columns
+                        .Select(x => new DataColumn
+                        {
+                            ColumnName = x.ColumnName,
+                            DataType = x.DataType,
+                        }).ToArray());
+                    // and to iterate over the rows
+                    var skipDeleted = true;
+                    var dbfRecord = new DbfRecord(dbfTable);
+
+                    while (dbfTable.Read(dbfRecord))
+                    {
+                        if (skipDeleted && dbfRecord.IsDeleted)
+                        {
+                            continue;
+                        }
+                        row = dt.NewRow();
+                        for (int i = 0; i < dbfRecord.Values.Count; i++)
+                        {
+                            row[i] = dbfRecord.Values[i].ToString();
+                        }
+                        dt.Rows.Add(row);
+                    }
+                    var jsonString = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                    return JsonConvert.DeserializeObject<IEnumerable<T>>(JsonConvert.SerializeObject(dt, Formatting.Indented));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+        /// <summary>
+        /// 匯出資料為Excel檔
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="sheetName"></param>
+        /// <param name="exportDirPath"></param>
+        public static void ExportDataToExcel(IEnumerable<T> data, string sheetName, string exportDirPath)
+        {
+            try
+            {
+                ////建立Excel 2007檔案
+                IWorkbook wb = new XSSFWorkbook();
+                ISheet ws;
+
+                if (sheetName != string.Empty)
+                {
+                    ws = wb.CreateSheet(sheetName);
+                }
+                else
+                {
+                    ws = wb.CreateSheet("Sheet1");
+                }
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                var ColNames = data.First().GetType().GetProperties().Select(p => p.Name).ToArray();
+
+                ws.CreateRow(0);//第一行為欄位名稱
+                for (int i = 0; i < ColNames.Count(); i++)
+                {
+                    ws.GetRow(0).CreateCell(i).SetCellValue(ColNames[i]);
+                }
+
+
+                int iRow = 0;
+                foreach (var d in data)
+                {
+                    ws.CreateRow(iRow + 1);
+                    for (int j = 0; j < ColNames.Count(); j++)
+                    {
+                        var value = d.GetType().GetProperty(ColNames[j]).GetValue(d);
+                        if (value != null)
+                        {
+                            ws.GetRow(iRow + 1).CreateCell(j).SetCellValue(value.ToString());
+                        }
+                        else
+                        {
+                            ws.GetRow(iRow + 1).CreateCell(j);
+                        }
+                    }
+                    iRow++;
+                }
+
+                string exportFilePath = Path.ChangeExtension(Path.Combine(exportDirPath, sheetName), "xlsx");
+                FileStream file = new FileStream(exportFilePath, FileMode.Create);//產生檔案
+                wb.Write(file);
+                wb.Dispose();
+                file.Close();
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using NPOI.HPSF;
+﻿using FileConvertSerivce.Services;
+using NPOI.HPSF;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -109,6 +110,49 @@ namespace FileConvertTool
         {
             richTextBox1.AppendText(msg + "\n");
             richTextBox1.Refresh();
+        }
+        /// <summary>
+        /// 按鈕_整批轉換_轉為新Schema並匯出Excel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_ConvertNewSchemaAndExportExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 開始執行 整批轉換_轉為新Schema並匯出Excel ");
+
+                if (!Directory.Exists(DbfFileConvertInputDirPath))
+                {
+                    Directory.CreateDirectory(DbfFileConvertInputDirPath);
+                    RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 完成建立資料夾 {DbfFileConvertInputDirPath}");
+                }
+                var files = Directory.GetFiles(DbfFileConvertInputDirPath, "*.dbf");
+                foreach (var file in files)
+                {
+                    string fileName = Path.GetFileName(file);
+                    try
+                    {
+                        switch (fileName)
+                        {
+                            // 執行產品主檔轉換
+                            case "jjzitm.dbf":
+                                ProductService.ConvertToNewSchemaAndExportExcel(file, DbfFileConvertExportDirPath);
+                                RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 完成轉換 {fileName}");
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 轉換失敗 {fileName} {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 執行失敗 {ex.Message}");
+            }
+
         }
     }
 }

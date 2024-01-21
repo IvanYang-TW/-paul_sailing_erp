@@ -34,6 +34,7 @@ namespace FileConvertTool
             openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             richTextBox1 = new System.Windows.Forms.RichTextBox();
             btn_directoryDbfConvertToExcel = new System.Windows.Forms.Button();
+            btn_ConvertNewSchemaAndExportExcel = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // btn_dbfFileConvert
@@ -52,9 +53,9 @@ namespace FileConvertTool
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new System.Drawing.Point(21, 93);
+            richTextBox1.Location = new System.Drawing.Point(12, 197);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new System.Drawing.Size(410, 267);
+            richTextBox1.Size = new System.Drawing.Size(427, 226);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
             // 
@@ -68,11 +69,22 @@ namespace FileConvertTool
             btn_directoryDbfConvertToExcel.UseVisualStyleBackColor = true;
             btn_directoryDbfConvertToExcel.Click += btn_directoryDbfConvertToExcel_Click;
             // 
+            // btn_ConvertNewSchemaAndExportExcel
+            // 
+            btn_ConvertNewSchemaAndExportExcel.Location = new System.Drawing.Point(30, 125);
+            btn_ConvertNewSchemaAndExportExcel.Name = "btn_ConvertNewSchemaAndExportExcel";
+            btn_ConvertNewSchemaAndExportExcel.Size = new System.Drawing.Size(237, 23);
+            btn_ConvertNewSchemaAndExportExcel.TabIndex = 3;
+            btn_ConvertNewSchemaAndExportExcel.Text = "整批轉換_轉為新Schema並匯出Excel";
+            btn_ConvertNewSchemaAndExportExcel.UseVisualStyleBackColor = true;
+            btn_ConvertNewSchemaAndExportExcel.Click += btn_ConvertNewSchemaAndExportExcel_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(451, 375);
+            ClientSize = new System.Drawing.Size(451, 435);
+            Controls.Add(btn_ConvertNewSchemaAndExportExcel);
             Controls.Add(btn_directoryDbfConvertToExcel);
             Controls.Add(richTextBox1);
             Controls.Add(btn_dbfFileConvert);
@@ -88,6 +100,7 @@ namespace FileConvertTool
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button btn_directoryDbfConvertToExcel;
+        private System.Windows.Forms.Button btn_ConvertNewSchemaAndExportExcel;
     }
 }
 
