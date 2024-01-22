@@ -78,7 +78,6 @@ namespace FileConvertSerivce.Services
                     StringBuilder sb = new StringBuilder();
                     sb.AppendLine(string.Join(",", dbfTable.Columns.Select(x => x.ColumnName)));
                     DataTable dt = new DataTable();
-                    DataRow row = null;
                     dt.Columns.AddRange(dbfTable.Columns
                         .Select(x => new DataColumn
                         {
@@ -95,7 +94,7 @@ namespace FileConvertSerivce.Services
                         {
                             continue;
                         }
-                        row = dt.NewRow();
+                        DataRow row = dt.NewRow();
                         for (int i = 0; dbfRecord.Values.Count > 0; i++)
                         {
                             row[i] = dbfRecord.Values[i];
@@ -131,7 +130,6 @@ namespace FileConvertSerivce.Services
                     StringBuilder sb = new StringBuilder();
                     sb.AppendLine(string.Join(",", dbfTable.Columns.Select(x => x.ColumnName)));
                     DataTable dt = new DataTable();
-                    DataRow row = null;
                     dt.Columns.AddRange(dbfTable.Columns
                         .Select(x => new DataColumn
                         {
@@ -148,7 +146,7 @@ namespace FileConvertSerivce.Services
                         {
                             continue;
                         }
-                        row = dt.NewRow();
+                        DataRow row = dt.NewRow();
                         for (int i = 0; dbfRecord.Values.Count > 0; i++)
                         {
                             row[i] = dbfRecord.Values[i];
@@ -269,7 +267,8 @@ namespace FileConvertSerivce.Services
             }
             catch (Exception ex)
             {
-                throw;
+                // 適當地處理例外情況，例如日誌或再次拋出
+                throw new Exception("導出 Excel 失敗", ex);
             }
         }
     }
@@ -288,15 +287,8 @@ namespace FileConvertSerivce.Services
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 using (var dbfTable = new DbfTable(dbfPath, Encoding.GetEncoding("big5")))
                 {
-                    var header = dbfTable.Header;
-                    var versionDescription = header.VersionDescription;
-                    var hasMemo = dbfTable.Memo != null;
-                    var recordCount = header.RecordCount;
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendLine(string.Join(",", dbfTable.Columns.Select(x => x.ColumnName)));
+                    // Read data
                     DataTable dt = new DataTable();
-                    DataRow row = null;
                     dt.Columns.AddRange(dbfTable.Columns
                         .Select(x => new DataColumn
                         {
@@ -313,7 +305,7 @@ namespace FileConvertSerivce.Services
                         {
                             continue;
                         }
-                        row = dt.NewRow();
+                        DataRow row = dt.NewRow();
                         for (int i = 0; i < dbfRecord.Values.Count; i++)
                         {
                             row[i] = dbfRecord.Values[i].ToString();
@@ -321,7 +313,7 @@ namespace FileConvertSerivce.Services
                         dt.Rows.Add(row);
                     }
                     var jsonString = JsonConvert.SerializeObject(dt, Formatting.Indented);
-                    return JsonConvert.DeserializeObject<IEnumerable<T>>(JsonConvert.SerializeObject(dt, Formatting.Indented));
+                    return JsonConvert.DeserializeObject<List<T>>(jsonString);
                 }
             }
             catch (Exception ex)
@@ -330,6 +322,8 @@ namespace FileConvertSerivce.Services
                 throw;
             }
         }
+
+
         /// <summary>
         /// 匯出資料為Excel檔
         /// </summary>
@@ -355,12 +349,13 @@ namespace FileConvertSerivce.Services
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                var ColNames = data.First().GetType().GetProperties().Select(p => p.Name).ToArray();
+                var properties = typeof(T).GetProperties();
+                var colNames = properties.Select(p => p.Name).ToArray();
 
                 ws.CreateRow(0);//第一行為欄位名稱
-                for (int i = 0; i < ColNames.Count(); i++)
+                for (int i = 0; i < colNames.Count(); i++)
                 {
-                    ws.GetRow(0).CreateCell(i).SetCellValue(ColNames[i]);
+                    ws.GetRow(0).CreateCell(i).SetCellValue(colNames[i]);
                 }
 
 
@@ -368,9 +363,9 @@ namespace FileConvertSerivce.Services
                 foreach (var d in data)
                 {
                     ws.CreateRow(iRow + 1);
-                    for (int j = 0; j < ColNames.Count(); j++)
+                    for (int j = 0; j < colNames.Count(); j++)
                     {
-                        var value = d.GetType().GetProperty(ColNames[j]).GetValue(d);
+                        var value = properties[j].GetValue(d);
                         if (value != null)
                         {
                             ws.GetRow(iRow + 1).CreateCell(j).SetCellValue(value.ToString());
@@ -384,15 +379,16 @@ namespace FileConvertSerivce.Services
                 }
 
                 string exportFilePath = Path.ChangeExtension(Path.Combine(exportDirPath, sheetName), "xlsx");
-                FileStream file = new FileStream(exportFilePath, FileMode.Create);//產生檔案
-                wb.Write(file);
-                wb.Dispose();
-                file.Close();
-
+                // 使用 using 以確保資源釋放
+                using (FileStream file = new FileStream(exportFilePath, FileMode.Create)) 
+                {
+                    wb.Write(file);
+                }
             }
             catch (Exception ex)
             {
-                throw;
+                // 適當地處理例外情況，例如日誌或再次拋出
+                throw new Exception("導出 Excel 失敗", ex);
             }
 
         }

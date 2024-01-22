@@ -18,19 +18,19 @@ namespace FileConvertSerivce.Models.Product
         /// <summary>
         /// 產品名稱
         /// </summary>
-        public string SPEC { get; set; }
+        public string? SPEC { get; set; }
         /// <summary>
         /// 單位
         /// </summary>
-        public string UNIT { get; set; }
+        public string? UNIT { get; set; }
         /// <summary>
         /// 顏色
         /// </summary>
-        public string COLOR { get; set; }
+        public string? COLOR { get; set; }
         /// <summary>
         /// 尺寸
         /// </summary>
-        public string SIZE { get; set; }
+        public string? SIZE { get; set; }
         /// <summary>
         /// 售價
         /// </summary>
@@ -46,11 +46,11 @@ namespace FileConvertSerivce.Models.Product
         /// <summary>
         /// 建立日期
         /// </summary>
-        public string DATE { get; set; }
+        public string? DATE { get; set; }
         /// <summary>
         /// 尺寸範圍
         /// </summary>
-        public string REMK { get; set; }
+        public string? REMK { get; set; }
         /// <summary>
         /// 定價
         /// </summary>
@@ -58,38 +58,38 @@ namespace FileConvertSerivce.Models.Product
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM1 { get; set; }
+        public string? REM1 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM2 { get; set; }
+        public string? REM2 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM3 { get; set; }
+        public string? REM3 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM4 { get; set; }
+        public string? REM4 { get; set; }
         /// <summary>
         /// 性別
         /// </summary>
-        public string SEX { get; set; }
+        public string? SEX { get; set; }
         /// <summary>
         /// 產地
         /// </summary>
-        public string R71 { get; set; }
+        public string? R71 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM5 { get; set; }
+        public string? REM5 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM6 { get; set; }
+        public string? REM6 { get; set; }
         /// <summary>
         /// 材質成分/備註
         /// </summary>
-        public string REM7 { get; set; }
+        public string? REM7 { get; set; }
     }
 }

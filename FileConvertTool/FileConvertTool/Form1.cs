@@ -137,7 +137,7 @@ namespace FileConvertTool
                         {
                             // 執行產品主檔轉換
                             case "jjzitm.dbf":
-                                ProductService.ConvertToNewSchemaAndExportExcel(file, DbfFileConvertExportDirPath);
+                                new ProductService().ConvertToNewSchemaAndExportExcel(file, DbfFileConvertExportDirPath);
                                 RichTextBoxMsgLine($"{DateTime.Now.ToString("F")} | 完成轉換 {fileName}");
                                 break;
                         }
