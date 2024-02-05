@@ -42,7 +42,7 @@ namespace FileConvertSerivce.Models.Product
         /// <summary>
         /// 庫存量
         /// </summary>
-        public decimal QTY { get; set; }
+        public decimal? QTY { get; set; }
         /// <summary>
         /// 建立日期
         /// </summary>

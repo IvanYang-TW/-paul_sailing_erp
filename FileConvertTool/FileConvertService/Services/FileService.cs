@@ -211,6 +211,12 @@ namespace FileConvertSerivce.Services
         {
             try
             {
+                // 建立資料夾匯出資料夾
+                if (!Directory.Exists(exportDirPath))
+                {
+                    Directory.CreateDirectory(exportDirPath);
+                }
+
                 ////建立Excel 2007檔案
                 IWorkbook wb = new XSSFWorkbook();
                 ISheet ws;
@@ -293,7 +299,7 @@ namespace FileConvertSerivce.Services
                         .Select(x => new DataColumn
                         {
                             ColumnName = x.ColumnName,
-                            DataType = x.DataType,
+                            DataType = typeof(string),
                         }).ToArray());
                     // and to iterate over the rows
                     var skipDeleted = true;
@@ -334,6 +340,12 @@ namespace FileConvertSerivce.Services
         {
             try
             {
+                // 建立資料夾匯出資料夾
+                if (!Directory.Exists(exportDirPath))
+                {
+                    Directory.CreateDirectory(exportDirPath);
+                }
+
                 ////建立Excel 2007檔案
                 IWorkbook wb = new XSSFWorkbook();
                 ISheet ws;

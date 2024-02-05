@@ -55,6 +55,7 @@ namespace FileConvertTool
             // 
             richTextBox1.Location = new System.Drawing.Point(12, 197);
             richTextBox1.Name = "richTextBox1";
+            richTextBox1.ReadOnly = true;
             richTextBox1.Size = new System.Drawing.Size(427, 226);
             richTextBox1.TabIndex = 1;
             richTextBox1.Text = "";
@@ -89,7 +90,7 @@ namespace FileConvertTool
             Controls.Add(richTextBox1);
             Controls.Add(btn_dbfFileConvert);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Dos資料轉檔小工具";
             ResumeLayout(false);
         }
 

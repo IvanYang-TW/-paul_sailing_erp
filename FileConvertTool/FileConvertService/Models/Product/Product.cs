@@ -98,43 +98,43 @@ namespace FileConvertSerivce.Models.Product
         /// <summary>
         /// 庫存量(S)
         /// </summary>
-        public int CQTY_01 { get; set; }
+        public decimal CQTY_01 { get; set; }
         /// <summary>
         /// 庫存量(M)
         /// </summary>
-        public int CQTY_02 { get; set; }
+        public decimal CQTY_02 { get; set; }
         /// <summary>
         /// 庫存量(L)
         /// </summary>
-        public int CQTY_03 { get; set; }
+        public decimal CQTY_03 { get; set; }
         /// <summary>
         /// 庫存量(XL)
         /// </summary>
-        public int CQTY_04 { get; set; }
+        public decimal CQTY_04 { get; set; }
         /// <summary>
         /// 庫存量(XXL)
         /// </summary>
-        public int CQTY_05 { get; set; }
+        public decimal CQTY_05 { get; set; }
         /// <summary>
         /// 庫存量(3L)
         /// </summary>
-        public int CQTY_06 { get; set; }
+        public decimal CQTY_06 { get; set; }
         /// <summary>
         /// 庫存量(4L)
         /// </summary>
-        public int CQTY_07 { get; set; }
+        public decimal CQTY_07 { get; set; }
         /// <summary>
         /// 庫存量(5L)
         /// </summary>
-        public int CQTY_08 { get; set; }
+        public decimal CQTY_08 { get; set; }
         /// <summary>
         /// 庫存量(EXT)
         /// </summary>
-        public int CQTY_09 { get; set; }
+        public decimal CQTY_09 { get; set; }
         /// <summary>
         /// 庫存總量
         /// </summary>
-        public int CQTY { get; set; }
+        public decimal CQTY { get; set; }
         /// <summary>
         /// EXT尺碼
         /// </summary>
