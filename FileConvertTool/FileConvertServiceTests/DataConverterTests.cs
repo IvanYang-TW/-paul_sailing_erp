@@ -74,4 +74,21 @@ namespace FileConvertServiceTests
 
         }
     }
+
+    public class ProductIngredientTests
+    {
+        string DirPath = "D:\\瑋瑋服飾企業有限公司\\ErpStudio\\-paul_sailing_erp\\FileConvertTool\\FileConvertTool\\bin\\Debug\\net7.0-windows\\dbfFiles";
+
+        [Fact]
+        public void GetDataFromCsvFile_ShouldWork()
+        {
+            // Arrange
+            // Act
+            var result = new IngredientService().GetDataFromCsvFile(Path.Combine(DirPath, "Sample\\Ingredient.csv"));
+            // Assert
+            Assert.NotNull(result);
+
+        }
+
+    }
 }
