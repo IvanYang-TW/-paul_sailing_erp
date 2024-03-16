@@ -42,7 +42,7 @@ namespace FileConvertService.Models.Supplier
         /// <summary>
         /// 扣率(%)
         /// </summary>
-        public string OFFCOUNT { get; set; }
+        public decimal OFFCOUNT { get; set; }
         /// <summary>
         /// 負責人
         /// </summary>
@@ -86,11 +86,11 @@ namespace FileConvertService.Models.Supplier
         /// <summary>
         /// 開帳應付
         /// </summary>
-        public string FPAYBIL { get; set; }
+        public decimal FPAYBIL { get; set; }
         /// <summary>
         /// 未付帳款
         /// </summary>
-        public string CPAYBIL { get; set; }
+        public decimal CPAYBIL { get; set; }
         /// <summary>
         /// 異動日期
         /// </summary>

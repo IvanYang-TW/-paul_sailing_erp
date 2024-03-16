@@ -74,11 +74,11 @@ namespace FileConvertService.Models.Customer
 
         public string DMT { get; set; }
 
-        public string G5 { get; set; }
+        public decimal G5 { get; set; }
 
         public string QA1 { get; set; }
 
-        public string QA2 { get; set; }
+        public decimal QA2 { get; set; }
 
         public string QA3 { get; set; }
     }

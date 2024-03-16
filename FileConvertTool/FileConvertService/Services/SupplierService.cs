@@ -33,6 +33,7 @@ namespace FileConvertService.Services
                     ADDR = x.ADD,
                     ZIP = x.VOAL,
                     CMPID = x.IDNO,
+                    OFFCOUNT = x.G5 / 100,
                     BOSS = x.BOSS,
                     TEL1 = !Regex.IsMatch(x.TEL, @"^09") ? x.TEL : null,
                     TEL2 = !Regex.IsMatch(x.BTEL, @"^09") ? x.BTEL : null,

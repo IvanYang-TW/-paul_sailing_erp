@@ -1,0 +1,13 @@
+﻿################################################################################
+# 這個 .gitignore 檔案由 Microsoft(R) Visual Studio 自動建立。
+################################################################################
+
+/FileConvertTool/FileConvertService/bin/Debug/net7.0
+/FileConvertTool/FileConvertService/obj
+/FileConvertTool/FileConvertServiceTests/bin/Debug/net7.0
+/FileConvertTool/FileConvertServiceTests/obj/Debug/net7.0
+/FileConvertTool/FileConvertServiceTests/obj
+/FileConvertTool/FileConvertTool/bin/Debug
+/FileConvertTool/FileConvertTool/obj
+/.vs
+/FileConvertTool/.vs

@@ -74,7 +74,9 @@ namespace FileConvertService.Models.Supplier
         public string DMT { get; set; }
 
         public string BNO { get; set; }
-
-        public string G5 { get; set; }
+        /// <summary>
+        /// 折扣率
+        /// </summary>
+        public decimal G5 { get; set; }
     }
 }
