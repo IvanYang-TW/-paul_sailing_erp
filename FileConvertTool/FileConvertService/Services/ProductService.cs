@@ -2,6 +2,7 @@
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,6 +33,9 @@ namespace FileConvertSerivce.Services
 
             List<string> sizeScope = new List<string> { "S", "M", "L", "XL", "XXL", "3L", "4L", "5L" };
 
+            CultureInfo culture = new CultureInfo("zh-TW");
+            culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+
             // 執行轉換邏輯
             var resultProducts = dosData
                 .Where(x => Regex.IsMatch(x.INO, @"^\d{4}-\d+\s*[A-Z]*"))
@@ -59,7 +63,7 @@ namespace FileConvertSerivce.Services
                     CQTY_08 = dosProductItem.Where(x => x.SIZE == "5L").Select(x => x.QTY).FirstOrDefault() ?? 0.00M,
                     CQTY_09 = dosProductItem.Where(x => !sizeScope.Contains(x.SIZE)).Sum(x => x.QTY ?? 0.00M),
                     CQTY = dosProductItem.Sum(x => x.QTY ?? 0.00M),
-                    TDATE = DateTime.Now.ToString("s"),
+                    TDATE = !string.IsNullOrEmpty(dosProductItem.First().DATE) ? DateTime.Parse(dosProductItem.First().DATE, culture).ToString("yyyy-MM-dd") : null,
                     REMARK = string.Join(",", GetCommentsList(dosProductItem.First()))
                 }).OrderBy(x => x.CODE);
 

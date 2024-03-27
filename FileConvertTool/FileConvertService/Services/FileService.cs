@@ -6,12 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace FileConvertSerivce.Services
 {
@@ -238,6 +240,11 @@ namespace FileConvertSerivce.Services
                     var hasMemo = dbfTable.Memo != null;
                     var recordCount = header.RecordCount;
 
+                    // 民國日期轉換西元使用
+                    CultureInfo culture = new CultureInfo("zh-TW");
+                    culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+
+
                     ws.CreateRow(0);//第一行為欄位名稱
                     for (int i = 0; i < dbfTable.Columns.Count; i++)
                     {
@@ -259,7 +266,27 @@ namespace FileConvertSerivce.Services
                         ws.CreateRow(iRow + 1);
                         for (int j = 0; j < dbfTable.Columns.Count; j++)
                         {
-                            ws.GetRow(iRow + 1).CreateCell(j).SetCellValue(dbfRecord.Values[j].ToString());
+                            var value = dbfRecord.GetValue(j);
+                            if (value == null)
+                            {
+                                ws.GetRow(iRow + 1).CreateCell(j);
+                                continue;
+                            }
+                            var valueType = dbfRecord.GetFieldType(j);
+                            var row = ws.GetRow(iRow + 1).CreateCell(j);
+                            List<Type> vauleNumTypeFilter = new List<Type> { typeof(int?), typeof(double?), typeof(decimal?), typeof(int), typeof(double), typeof(decimal) };
+                            if (vauleNumTypeFilter.Contains(valueType))
+                            {
+                                row.SetCellValue(Convert.ToDouble(value));
+                            }
+                            else if (Regex.IsMatch(Convert.ToString(value), @"^\d{3}[.]{1}\d{2}[.]{1}\d{2}$") && DateTime.TryParse(Convert.ToString(value), culture, out DateTime dtResult))
+                            {
+                                row.SetCellValue(dtResult);
+                            }
+                            else
+                            {
+                                row.SetCellValue(Convert.ToString(value));
+                            }
                         }
                         iRow++;
                     }
@@ -340,6 +367,11 @@ namespace FileConvertSerivce.Services
         {
             try
             {
+                // 民國日期轉換西元使用
+                CultureInfo culture = new CultureInfo("zh-TW");
+                culture.DateTimeFormat.Calendar = new TaiwanCalendar();
+
+
                 // 建立資料夾匯出資料夾
                 if (!Directory.Exists(exportDirPath))
                 {
@@ -378,13 +410,25 @@ namespace FileConvertSerivce.Services
                     for (int j = 0; j < colNames.Count(); j++)
                     {
                         var value = properties[j].GetValue(d);
-                        if (value != null)
+                        if (value == null)
                         {
-                            ws.GetRow(iRow + 1).CreateCell(j).SetCellValue(value.ToString());
+                            ws.GetRow(iRow + 1).CreateCell(j);
+                            continue;
+                        }
+                        var valueType = value.GetType();
+                        var row = ws.GetRow(iRow + 1).CreateCell(j);
+                        List<Type> vauleNumTypeFilter = new List<Type> { typeof(int?), typeof(double?), typeof(decimal?), typeof(int), typeof(double), typeof(decimal) };
+                        if (vauleNumTypeFilter.Contains(valueType))
+                        {
+                            row.SetCellValue(Convert.ToDouble(value));
+                        }
+                        else if (Regex.IsMatch(Convert.ToString(value), @"^\d{3}[.]{1}\d{2}[.]{1}\d{2}$") && DateTime.TryParse(Convert.ToString(value), culture, out DateTime dtResult))
+                        {
+                            row.SetCellValue(dtResult);
                         }
                         else
                         {
-                            ws.GetRow(iRow + 1).CreateCell(j);
+                            row.SetCellValue(Convert.ToString(value));
                         }
                     }
                     iRow++;
@@ -392,9 +436,9 @@ namespace FileConvertSerivce.Services
 
                 string exportFilePath = Path.ChangeExtension(Path.Combine(exportDirPath, sheetName), "xlsx");
                 // 使用 using 以確保資源釋放
-                using (FileStream file = new FileStream(exportFilePath, FileMode.Create)) 
+                using (FileStream file = new FileStream(exportFilePath, FileMode.OpenOrCreate, FileAccess.Write))
                 {
-                    wb.Write(file);
+                    wb.Write(file,false);
                 }
             }
             catch (Exception ex)

@@ -77,6 +77,6 @@ namespace FileConvertService.Models.Supplier
         /// <summary>
         /// 折扣率
         /// </summary>
-        public decimal G5 { get; set; }
+        public decimal? G5 { get; set; }
     }
 }
